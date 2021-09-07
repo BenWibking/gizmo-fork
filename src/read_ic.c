@@ -503,6 +503,47 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
 #endif
             break;
 
+        /* SLUG objects*/
+        case IO_SLUG_STATE_RNG:  /* It may not be *ip_int since it is a unit128 type */
+            for(n = 0; n < pc; n++) {P[offset + n].rngStateAtBirth = *ip_int++;}
+            break;
+
+        case IO_SLUG_STATE_INT:
+            for(n = 0; n < pc; n++) 
+                {
+                    P[offset + n].id = *ip_int++;
+                    P[offset + n].stoch_sn = *ip_int++;
+                }
+            break;
+
+        case IO_SLUG_STATE_DOUBLE: /*I did not include the last three quantities since I dont know how to deal with N */
+            for(n = 0; n < pc; n++) 
+                {
+                    P[offset + n].targetMass = *fp++;
+                    P[offset + n].birthMass = *fp++;
+                    P[offset + n].aliveMass = *fp++;
+                    P[offset + n].stochBirthMass = *fp++;
+                    P[offset + n].stochAliveMass = *fp++;
+                    P[offset + n].stochRemnantMass = *fp++;
+                    P[offset + n].nonStochBirthMass = *fp++;
+                    P[offset + n].nonStochAliveMass = *fp++;
+                    P[offset + n].nonStochRemnantMass = *fp++;
+                    P[offset + n].stellarMass = *fp++;
+                    P[offset + n].stochStellarMass = *fp++;
+                    P[offset + n].nonStochStellarMass = *fp++;
+                    P[offset + n].formationTime = *fp++;
+                    P[offset + n].curTime = *fp++;
+                    P[offset + n].clusterAge = *fp++;
+                    P[offset + n].lifetime = *fp++;
+                    P[offset + n].stellarDeathMass = *fp++;
+                    P[offset + n].A_V = *fp++;
+                    P[offset + n].A_Vneb = *fp++;
+                    P[offset + n].Lbol = *fp++;
+                    P[offset + n].Lbol_ext = *fp++;
+                    P[offset + n].tot_sn = *fp++;
+                    P[offset + n].last_yield_time = *fp++;
+                }
+            break;
 
         /* the other input fields (if present) are not needed to define the
              initial conditions of the code */
@@ -566,6 +607,7 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
         case IO_DYNERRORDEFAULT:
         case IO_VDIV:
         case IO_VORT:
+        case IO_VGRADNORM:
         case IO_CHIMES_MU:
         case IO_CHIMES_REDUCED:
         case IO_CHIMES_NH:
