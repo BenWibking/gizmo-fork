@@ -179,6 +179,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     MyOutputPosFloat *fp_pos;
     MyIDType *ip;
     int *ip_int;
+    uint64_t *ip_int64 
     float *fp_single;
 #ifdef OUTPUT_COOLRATE
     double tcool, u;
@@ -205,6 +206,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     fp_pos = (MyOutputPosFloat *) CommBuffer;
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
+    ip_int64 = (uint64_t *) CommBuffer;
     pindex = *startindex;
 
     switch (blocknr)
@@ -803,52 +805,56 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
 #endif
             break;
 
-        case IO_SLUG_STATE_RNG:
+        case IO_SLUG_STATE_RNG:  /* It is an 128 bit integer. I split it into 2 64 bit integers for easier output */
             for(n = 0; n < pc; pindex++)
-                if(P[pindex].Type == type) /* Since only npart > 0 is saved, this line is not important */
+                if(P[pindex].Type == type)
                 {
-                    *ip_int++ = (rng_state_t) P[pindex].rngStateAtBirth;
+                    x = P[pindex].slug_cluster_state.rngStateAtBirth;
+                    part1 = (uint64_t) x
+                    part2 = (x >> 64)
+                    *ip_int64++ = part1;
+                    *ip_int64++ = part2;
                     n++;
                 }
             break;
 
         case IO_SLUG_STATE_INT:
             for(n = 0; n < pc; pindex++)
-                if(P[pindex].Type == type) /* Since only npart > 0 is saved, this line is not important */
+                if(P[pindex].Type == type)
                 {
-                    *ip_int++ = (uint64_t) P[pindex].id;
-                    *ip_int++ = (uint64_t) P[pindex].stoch_sn;
+                    *ip_int64++ = (uint64_t) P[pindex].slug_cluster_state.id;
+                    *ip_int64++ = (uint64_t) P[pindex].slug_cluster_state.stoch_sn;
                     n++;
                 }
             break;
 
         case IO_SLUG_STATE_DOUBLE: /*I did not include the last three quantities since I dont know how to deal with N */
             for(n = 0; n < pc; pindex++)
-                if(P[pindex].Type == type) /* Since only npart > 0 is saved, this line is not important */
+                if(P[pindex].Type == type)
                 {
-                    *fp++ = (double) P[pindex].targetMass;
-                    *fp++ = (double) P[pindex].birthMass;
-                    *fp++ = (double) P[pindex].aliveMass;
-                    *fp++ = (double) P[pindex].stochBirthMass;
-                    *fp++ = (double) P[pindex].stochAliveMass;
-                    *fp++ = (double) P[pindex].stochRemnantMass;
-                    *fp++ = (double) P[pindex].nonStochBirthMass;
-                    *fp++ = (double) P[pindex].nonStochAliveMass;
-                    *fp++ = (double) P[pindex].nonStochRemnantMass;
-                    *fp++ = (double) P[pindex].stellarMass;
-                    *fp++ = (double) P[pindex].stochStellarMass;
-                    *fp++ = (double) P[pindex].nonStochStellarMass;
-                    *fp++ = (double) P[pindex].formationTime;
-                    *fp++ = (double) P[pindex].curTime;
-                    *fp++ = (double) P[pindex].clusterAge;
-                    *fp++ = (double) P[pindex].lifetime;
-                    *fp++ = (double) P[pindex].stellarDeathMass;
-                    *fp++ = (double) P[pindex].A_V;
-                    *fp++ = (double) P[pindex].A_Vneb;
-                    *fp++ = (double) P[pindex].Lbol;
-                    *fp++ = (double) P[pindex].Lbol_ext;
-                    *fp++ = (double) P[pindex].tot_sn;
-                    *fp++ = (double) P[pindex].last_yield_time;
+                    *fp++ = (MyOutputFloat) P[pindex].targetMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.birthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.aliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochBirthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochAliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochRemnantMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochBirthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochAliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochRemnantMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochStellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochStellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.formationTime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.curTime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.clusterAge;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.lifetime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stellarDeathMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.A_V;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.A_Vneb;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.Lbol;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.Lbol_ext;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.tot_sn;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.last_yield_time;
                     n++;
                 }
             break;
@@ -857,7 +863,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
             for(n = 0; n < pc; pindex++)
                 if(P[pindex].Type == type)
                 {
-                    double vgn = 0.;
+                    MyOutputFloat vgn = 0.;
                     for(k = 0; k < 3; k++)
                     {
                         for(int j = 0; j < 3; j++) 
@@ -1684,7 +1690,7 @@ int get_bytes_per_blockelement(enum iofields blocknr, int mode)
             break;
 
         case IO_SLUG_STATE_RNG:
-            bytes_per_blockelement = sizeof(rng_state_t);
+            bytes_per_blockelement = sizeof(uint64_t) * 2;
             //Total size of the struct
             break;
 
@@ -1928,15 +1934,15 @@ int get_datatype_in_block(enum iofields blocknr)
             break;
 
         case IO_SLUG_STATE_RNG:
-            typekey = 4;		/* 128 int * Define later what I should do with this case. 2 Places */
+            typekey = 2;		/* 64 bit int */
             break;
 
         case IO_SLUG_STATE_INT:
-            typekey = 0;		/* native int */
+            typekey = 2;		/* 64 bit int */
             break;
 
         case IO_SLUG_STATE_DOUBLE:
-            typekey = 3;		/* Double */
+            typekey = 1;		/* Double */
             break;
 
         default:
@@ -1955,7 +1961,7 @@ int get_values_per_blockelement(enum iofields blocknr)
     switch (blocknr)
     {   
         case IO_SLUG_STATE_RNG:
-            values = 1;
+            values = 2;
             break;
 
         case IO_SLUG_STATE_INT:

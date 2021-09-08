@@ -176,11 +176,13 @@ void read_ic(char *fname)
 void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
 {
     long n, k; MyInputFloat *fp; MyInputPosFloat *fp_pos; MyIDType *ip; int *ip_int; float *fp_single;
+    uint64_t *ip_int64;
     fp = (MyInputFloat *) CommBuffer;
     fp_pos = (MyInputPosFloat *) CommBuffer;
     fp_single = (float *) CommBuffer;
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
+    ip_int64 = (uint64_t *) CommBuffer;
 
     switch(blocknr)
     {
@@ -504,44 +506,48 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
             break;
 
         /* SLUG objects*/
-        case IO_SLUG_STATE_RNG:  /* It may not be *ip_int since it is a unit128 type */
-            for(n = 0; n < pc; n++) {P[offset + n].rngStateAtBirth = *ip_int++;}
+        case IO_SLUG_STATE_RNG:  /* combining 2 64 bit int into one 128 int */
+            for(n = 0; n < pc; n++) {
+                part1 = *ip_int64++
+                part2 = *ip_int64++
+                P[offset + n].slug_cluster_state.rngStateAtBirth = = part1 + (part2 << 64);
+                }
             break;
 
         case IO_SLUG_STATE_INT:
             for(n = 0; n < pc; n++) 
                 {
-                    P[offset + n].id = *ip_int++;
-                    P[offset + n].stoch_sn = *ip_int++;
+                    P[offset + n].slug_cluster_state.id = *ip_int64++;
+                    P[offset + n].slug_cluster_state.stoch_sn = *ip_int64++;
                 }
             break;
 
         case IO_SLUG_STATE_DOUBLE: /*I did not include the last three quantities since I dont know how to deal with N */
             for(n = 0; n < pc; n++) 
                 {
-                    P[offset + n].targetMass = *fp++;
-                    P[offset + n].birthMass = *fp++;
-                    P[offset + n].aliveMass = *fp++;
-                    P[offset + n].stochBirthMass = *fp++;
-                    P[offset + n].stochAliveMass = *fp++;
-                    P[offset + n].stochRemnantMass = *fp++;
-                    P[offset + n].nonStochBirthMass = *fp++;
-                    P[offset + n].nonStochAliveMass = *fp++;
-                    P[offset + n].nonStochRemnantMass = *fp++;
-                    P[offset + n].stellarMass = *fp++;
-                    P[offset + n].stochStellarMass = *fp++;
-                    P[offset + n].nonStochStellarMass = *fp++;
-                    P[offset + n].formationTime = *fp++;
-                    P[offset + n].curTime = *fp++;
-                    P[offset + n].clusterAge = *fp++;
-                    P[offset + n].lifetime = *fp++;
-                    P[offset + n].stellarDeathMass = *fp++;
-                    P[offset + n].A_V = *fp++;
-                    P[offset + n].A_Vneb = *fp++;
-                    P[offset + n].Lbol = *fp++;
-                    P[offset + n].Lbol_ext = *fp++;
-                    P[offset + n].tot_sn = *fp++;
-                    P[offset + n].last_yield_time = *fp++;
+                    P[offset + n].slug_cluster_state.targetMass = *fp++;
+                    P[offset + n].slug_cluster_state.birthMass = *fp++;
+                    P[offset + n].slug_cluster_state.aliveMass = *fp++;
+                    P[offset + n].slug_cluster_state.stochBirthMass = *fp++;
+                    P[offset + n].slug_cluster_state.stochAliveMass = *fp++;
+                    P[offset + n].slug_cluster_state.stochRemnantMass = *fp++;
+                    P[offset + n].slug_cluster_state.nonStochBirthMass = *fp++;
+                    P[offset + n].slug_cluster_state.nonStochAliveMass = *fp++;
+                    P[offset + n].slug_cluster_state.nonStochRemnantMass = *fp++;
+                    P[offset + n].slug_cluster_state.stellarMass = *fp++;
+                    P[offset + n].slug_cluster_state.stochStellarMass = *fp++;
+                    P[offset + n].slug_cluster_state.nonStochStellarMass = *fp++;
+                    P[offset + n].slug_cluster_state.formationTime = *fp++;
+                    P[offset + n].slug_cluster_state.curTime = *fp++;
+                    P[offset + n].slug_cluster_state.clusterAge = *fp++;
+                    P[offset + n].slug_cluster_state.lifetime = *fp++;
+                    P[offset + n].slug_cluster_state.stellarDeathMass = *fp++;
+                    P[offset + n].slug_cluster_state.A_V = *fp++;
+                    P[offset + n].slug_cluster_state.A_Vneb = *fp++;
+                    P[offset + n].slug_cluster_state.Lbol = *fp++;
+                    P[offset + n].slug_cluster_state.Lbol_ext = *fp++;
+                    P[offset + n].slug_cluster_state.tot_sn = *fp++;
+                    P[offset + n].slug_cluster_state.last_yield_time = *fp++;
                 }
             break;
 
