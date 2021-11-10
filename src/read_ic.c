@@ -508,46 +508,46 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
         /* SLUG objects*/
         case IO_SLUG_STATE_RNG:  /* combining 2 64 bit int into one 128 int */
             for(n = 0; n < pc; n++) {
-                part1 = *ip_int64++
-                part2 = *ip_int64++
-                P[offset + n].slug_cluster_state.rngStateAtBirth = = part1 + (part2 << 64);
+                uint64_t part1 = *ip_int64++;
+                rng_state_t part2 = *ip_int64++;
+                P[offset + n].slug_state.rngStateAtBirth = part1 + (part2 << 64);
                 }
             break;
 
         case IO_SLUG_STATE_INT:
             for(n = 0; n < pc; n++) 
                 {
-                    P[offset + n].slug_cluster_state.id = *ip_int64++;
-                    P[offset + n].slug_cluster_state.stoch_sn = *ip_int64++;
+                    P[offset + n].slug_state.id = *ip_int64++;
+                    P[offset + n].slug_state.stoch_sn = *ip_int64++;
                 }
             break;
 
         case IO_SLUG_STATE_DOUBLE: /*I did not include the last three quantities since I dont know how to deal with N */
             for(n = 0; n < pc; n++) 
                 {
-                    P[offset + n].slug_cluster_state.targetMass = *fp++;
-                    P[offset + n].slug_cluster_state.birthMass = *fp++;
-                    P[offset + n].slug_cluster_state.aliveMass = *fp++;
-                    P[offset + n].slug_cluster_state.stochBirthMass = *fp++;
-                    P[offset + n].slug_cluster_state.stochAliveMass = *fp++;
-                    P[offset + n].slug_cluster_state.stochRemnantMass = *fp++;
-                    P[offset + n].slug_cluster_state.nonStochBirthMass = *fp++;
-                    P[offset + n].slug_cluster_state.nonStochAliveMass = *fp++;
-                    P[offset + n].slug_cluster_state.nonStochRemnantMass = *fp++;
-                    P[offset + n].slug_cluster_state.stellarMass = *fp++;
-                    P[offset + n].slug_cluster_state.stochStellarMass = *fp++;
-                    P[offset + n].slug_cluster_state.nonStochStellarMass = *fp++;
-                    P[offset + n].slug_cluster_state.formationTime = *fp++;
-                    P[offset + n].slug_cluster_state.curTime = *fp++;
-                    P[offset + n].slug_cluster_state.clusterAge = *fp++;
-                    P[offset + n].slug_cluster_state.lifetime = *fp++;
-                    P[offset + n].slug_cluster_state.stellarDeathMass = *fp++;
-                    P[offset + n].slug_cluster_state.A_V = *fp++;
-                    P[offset + n].slug_cluster_state.A_Vneb = *fp++;
-                    P[offset + n].slug_cluster_state.Lbol = *fp++;
-                    P[offset + n].slug_cluster_state.Lbol_ext = *fp++;
-                    P[offset + n].slug_cluster_state.tot_sn = *fp++;
-                    P[offset + n].slug_cluster_state.last_yield_time = *fp++;
+                    P[offset + n].slug_state.targetMass = *fp++;
+                    P[offset + n].slug_state.birthMass = *fp++;
+                    P[offset + n].slug_state.aliveMass = *fp++;
+                    P[offset + n].slug_state.stochBirthMass = *fp++;
+                    P[offset + n].slug_state.stochAliveMass = *fp++;
+                    P[offset + n].slug_state.stochRemnantMass = *fp++;
+                    P[offset + n].slug_state.nonStochBirthMass = *fp++;
+                    P[offset + n].slug_state.nonStochAliveMass = *fp++;
+                    P[offset + n].slug_state.nonStochRemnantMass = *fp++;
+                    P[offset + n].slug_state.stellarMass = *fp++;
+                    P[offset + n].slug_state.stochStellarMass = *fp++;
+                    P[offset + n].slug_state.nonStochStellarMass = *fp++;
+                    P[offset + n].slug_state.formationTime = *fp++;
+                    P[offset + n].slug_state.curTime = *fp++;
+                    P[offset + n].slug_state.clusterAge = *fp++;
+                    P[offset + n].slug_state.lifetime = *fp++;
+                    P[offset + n].slug_state.stellarDeathMass = *fp++;
+                    P[offset + n].slug_state.A_V = *fp++;
+                    P[offset + n].slug_state.A_Vneb = *fp++;
+                    P[offset + n].slug_state.Lbol = *fp++;
+                    P[offset + n].slug_state.Lbol_ext = *fp++;
+                    P[offset + n].slug_state.tot_sn = *fp++;
+                    P[offset + n].slug_state.last_yield_time = *fp++;
                 }
             break;
 

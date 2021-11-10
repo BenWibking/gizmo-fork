@@ -179,7 +179,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     MyOutputPosFloat *fp_pos;
     MyIDType *ip;
     int *ip_int;
-    uint64_t *ip_int64 
+    uint64_t *ip_int64;
     float *fp_single;
 #ifdef OUTPUT_COOLRATE
     double tcool, u;
@@ -808,10 +808,10 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
         case IO_SLUG_STATE_RNG:  /* It is an 128 bit integer. I split it into 2 64 bit integers for easier output */
             for(n = 0; n < pc; pindex++)
                 if(P[pindex].Type == type)
-                {
-                    x = P[pindex].slug_cluster_state.rngStateAtBirth;
-                    part1 = (uint64_t) x
-                    part2 = (x >> 64)
+                {   rng_state_t x;
+                    x = P[pindex].slug_state.rngStateAtBirth;
+                    uint64_t part1 = (uint64_t) x;
+                    uint64_t part2 = (x >> 64);
                     *ip_int64++ = part1;
                     *ip_int64++ = part2;
                     n++;
@@ -822,8 +822,8 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
             for(n = 0; n < pc; pindex++)
                 if(P[pindex].Type == type)
                 {
-                    *ip_int64++ = (uint64_t) P[pindex].slug_cluster_state.id;
-                    *ip_int64++ = (uint64_t) P[pindex].slug_cluster_state.stoch_sn;
+                    *ip_int64++ = (uint64_t) P[pindex].slug_state.id;
+                    *ip_int64++ = (uint64_t) P[pindex].slug_state.stoch_sn;
                     n++;
                 }
             break;
@@ -832,29 +832,29 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
             for(n = 0; n < pc; pindex++)
                 if(P[pindex].Type == type)
                 {
-                    *fp++ = (MyOutputFloat) P[pindex].targetMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.birthMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.aliveMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochBirthMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochAliveMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochRemnantMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochBirthMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochAliveMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochRemnantMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stellarMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stochStellarMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.nonStochStellarMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.formationTime;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.curTime;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.clusterAge;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.lifetime;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.stellarDeathMass;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.A_V;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.A_Vneb;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.Lbol;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.Lbol_ext;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.tot_sn;
-                    *fp++ = (MyOutputFloat) P[pindex].slug_cluster_state.last_yield_time;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.targetMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.birthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.aliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stochBirthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stochAliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stochRemnantMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.nonStochBirthMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.nonStochAliveMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.nonStochRemnantMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stochStellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.nonStochStellarMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.formationTime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.curTime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.clusterAge;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.lifetime;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.stellarDeathMass;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.A_V;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.A_Vneb;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.Lbol;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.Lbol_ext;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.tot_sn;
+                    *fp++ = (MyOutputFloat) P[pindex].slug_state.last_yield_time;
                     n++;
                 }
             break;
