@@ -1950,7 +1950,7 @@ int get_datatype_in_block(enum iofields blocknr)
             break;
         
         case IO_SLUG_STATE_INITIAL:
-            typekey = 0;		/* bool */
+            typekey = 4;		/* bool */
             break;
 
         case IO_SLUG_STATE_RNG:
@@ -3932,6 +3932,8 @@ void write_file(char *fname, int writeTask, int lastTask)
                                 strncpy(InfoBlock[n_info].type, "FLOATN  ", 8);
 #endif
                             break;
+                        case 4:
+                            strncpy(InfoBlock[n_info].type, "BOOL    ", 8);
                     }
                     n_info++;
                 }
@@ -4011,6 +4013,9 @@ void write_file(char *fname, int writeTask, int lastTask)
 #else
                                     hdf5_datatype = H5Tcopy(H5T_NATIVE_FLOAT);
 #endif
+                                    break;
+                                case 4:
+                                    hdf5_datatype = H5Tcopy(H5T_NATIVE_HBOOL);
                                     break;
                             }
 
