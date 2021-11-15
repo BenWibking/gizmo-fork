@@ -177,12 +177,14 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
 {
     long n, k; MyInputFloat *fp; MyInputPosFloat *fp_pos; MyIDType *ip; int *ip_int; float *fp_single;
     uint64_t *ip_int64;
+    bool *bl;
     fp = (MyInputFloat *) CommBuffer;
     fp_pos = (MyInputPosFloat *) CommBuffer;
     fp_single = (float *) CommBuffer;
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
     ip_int64 = (uint64_t *) CommBuffer;
+    bl = (bool *) CommBuffer;
 
     switch(blocknr)
     {
@@ -506,6 +508,12 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
             break;
 
         /* SLUG objects*/
+        case IO_SLUG_STATE_INITIAL:  /* saving whether slug object is intialized */
+            for(n = 0; n < pc; n++) {
+                P[offset + n].slug_state_initialized = *bl++;
+                }
+            break;
+
         case IO_SLUG_STATE_RNG:  /* combining 2 64 bit int into one 128 int */
             for(n = 0; n < pc; n++) {
                 uint64_t part1 = *ip_int64++;
