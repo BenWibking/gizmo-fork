@@ -181,7 +181,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     int *ip_int;
     uint64_t *ip_int64;
     float *fp_single;
-    bool *bl;
+    /* uint8_t *bl; */
 #ifdef OUTPUT_COOLRATE
     double tcool, u;
 #endif
@@ -208,7 +208,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
     ip_int64 = (uint64_t *) CommBuffer;
-    bl = (bool *) CommBuffer;
+    /* bl = (uint8_t *) CommBuffer; */
     pindex = *startindex;
 
     switch (blocknr)
@@ -811,7 +811,7 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
             for(n = 0; n < pc; pindex++)
                 if(P[pindex].Type == type)
                 {
-                    *bl++ = (bool) P[pindex].slug_state_initialized;
+                    *ip_int++ = (int) P[pindex].slug_state_initialized;
                     n++;
                 }
             break;
@@ -1701,7 +1701,7 @@ int get_bytes_per_blockelement(enum iofields blocknr, int mode)
             break;
         
         case IO_SLUG_STATE_INITIAL:
-            bytes_per_blockelement = sizeof(bool);
+            bytes_per_blockelement = sizeof(int);
             //Total size of the struct
             break;
 
@@ -1950,7 +1950,7 @@ int get_datatype_in_block(enum iofields blocknr)
             break;
         
         case IO_SLUG_STATE_INITIAL:
-            typekey = 4;		/* bool */
+            typekey = 0;		/* native int */
             break;
 
         case IO_SLUG_STATE_RNG:
@@ -3933,7 +3933,7 @@ void write_file(char *fname, int writeTask, int lastTask)
 #endif
                             break;
                         case 4:
-                            strncpy(InfoBlock[n_info].type, "BOOL    ", 8);
+                            strncpy(InfoBlock[n_info].type, "UINT8   ", 8);
                     }
                     n_info++;
                 }
@@ -4014,8 +4014,9 @@ void write_file(char *fname, int writeTask, int lastTask)
                                     hdf5_datatype = H5Tcopy(H5T_NATIVE_FLOAT);
 #endif
                                     break;
+                                    
                                 case 4:
-                                    hdf5_datatype = H5Tcopy(H5T_NATIVE_HBOOL);
+                                    hdf5_datatype = H5Tcopy(H5T_NATIVE_INT);
                                     break;
                             }
 
