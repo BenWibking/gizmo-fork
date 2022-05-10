@@ -893,6 +893,7 @@ void read_file(char *fname, int readTask, int lastTask)
                    && blocknr != IO_SLUG_STATE_RNG
                    && blocknr != IO_SLUG_STATE_INT
                    && blocknr != IO_SLUG_STATE_DOUBLE
+                   && blocknr != IO_AGE
 #endif
                    )
 #if defined(GDE_DISTORTIONTENSOR) && defined(GDE_READIC)

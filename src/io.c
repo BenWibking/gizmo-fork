@@ -2315,23 +2315,23 @@ long get_particles_in_block(enum iofields blocknr, int *typelist)
             break;
 
         case IO_SLUG_STATE_INITIAL:
-            for(i=0; i<6; i++) {if(!((1 << i) & (valid_star_types))) {typelist[i]=0;}}
-            return nstars_tot; /* only nstars > 0 will be written to be output */
+            for(i=0; i<6; i++) {if(i != 4) {typelist[i] = 0;}}
+            return nstars_tot; /* only type 4 star particles will have SLUG properties */
             break;
 
         case IO_SLUG_STATE_RNG:
-            for(i=0; i<6; i++) {if(!((1 << i) & (valid_star_types))) {typelist[i]=0;}}
-            return nstars_tot; /* only nstars > 0 will be written to be output */
+            for(i=0; i<6; i++) {if(i != 4) {typelist[i] = 0;}}
+            return nstars_tot; /* only type 4 star particles will have SLUG properties */
             break;
 
         case IO_SLUG_STATE_INT:
-            for(i=0; i<6; i++) {if(!((1 << i) & (valid_star_types))) {typelist[i]=0;}}
-            return nstars_tot;
+            for(i=0; i<6; i++) {if(i != 4) {typelist[i] = 0;}} 
+            return nstars_tot; /* only type 4 star particles will have SLUG properties */
             break;
 
         case IO_SLUG_STATE_DOUBLE:
-            for(i=0; i<6; i++) {if(!((1 << i) & (valid_star_types))) {typelist[i]=0;}}
-            return nstars_tot; /* only nstars > 0 will be written to be output */
+            for(i=0; i<6; i++) {if(i != 4) {typelist[i] = 0;}}
+            return nstars_tot; /* only type 4 star particles will have SLUG properties */
             break;
 
         case IO_OSTAR:
@@ -3932,8 +3932,6 @@ void write_file(char *fname, int writeTask, int lastTask)
                                 strncpy(InfoBlock[n_info].type, "FLOATN  ", 8);
 #endif
                             break;
-                        case 4:
-                            strncpy(InfoBlock[n_info].type, "UINT8   ", 8);
                     }
                     n_info++;
                 }
@@ -4013,10 +4011,6 @@ void write_file(char *fname, int writeTask, int lastTask)
 #else
                                     hdf5_datatype = H5Tcopy(H5T_NATIVE_FLOAT);
 #endif
-                                    break;
-                                    
-                                case 4:
-                                    hdf5_datatype = H5Tcopy(H5T_NATIVE_INT);
                                     break;
                             }
 
