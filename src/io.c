@@ -181,7 +181,6 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     int *ip_int;
     uint64_t *ip_int64;
     float *fp_single;
-    /* uint8_t *bl; */
 #ifdef OUTPUT_COOLRATE
     double tcool, u;
 #endif
@@ -208,7 +207,6 @@ void fill_write_buffer(enum iofields blocknr, int *startindex, int pc, int type)
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
     ip_int64 = (uint64_t *) CommBuffer;
-    /* bl = (uint8_t *) CommBuffer; */
     pindex = *startindex;
 
     switch (blocknr)

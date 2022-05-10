@@ -177,14 +177,12 @@ void empty_read_buffer(enum iofields blocknr, int offset, int pc, int type)
 {
     long n, k; MyInputFloat *fp; MyInputPosFloat *fp_pos; MyIDType *ip; int *ip_int; float *fp_single;
     uint64_t *ip_int64;
-    /* uint8_t *bl; */
     fp = (MyInputFloat *) CommBuffer;
     fp_pos = (MyInputPosFloat *) CommBuffer;
     fp_single = (float *) CommBuffer;
     ip = (MyIDType *) CommBuffer;
     ip_int = (int *) CommBuffer;
     ip_int64 = (uint64_t *) CommBuffer;
-    /* bl = (uint8_t *) CommBuffer; */
 
     switch(blocknr)
     {
